@@ -3,8 +3,7 @@ package com.movilepay.webservice
 import com.movilepay.api.AddOrderItemRequest
 import com.movilepay.command.AddOrderItemCommand
 import com.movilepay.command.RemoveOrderItemCommand
-import org.axonframework.commandhandling.CommandBus
-import org.axonframework.commandhandling.gateway.DefaultCommandGateway
+import org.axonframework.commandhandling.gateway.CommandGateway
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -15,35 +14,26 @@ import java.util.UUID
 
 
 @RestController
-class OrderItemController(commandBus: CommandBus) {
-
-    private val commandGateway = DefaultCommandGateway
-        .builder()
-        .commandBus(commandBus)
-        .build()
+class OrderItemController(private val commandGateway: CommandGateway) {
 
     @PostMapping("/orders/{orderId}/items")
-    fun confirm(@PathVariable orderId: UUID, @RequestBody request: AddOrderItemRequest): ResponseEntity<Void> {
+    fun confirm(@PathVariable orderId: UUID, @RequestBody request: AddOrderItemRequest): ResponseEntity<AddOrderItemCommand> {
         val command = AddOrderItemCommand(
             orderId = orderId,
             name = request.name,
             amount = request.amount
         )
 
-        commandGateway.sendAndWait<AddOrderItemCommand>(command)
-
-        return ResponseEntity.ok().build()
+        return ResponseEntity.ok(commandGateway.sendAndWait(command))
     }
 
     @DeleteMapping("/orders/{orderId}/items/{id}")
-    fun cancel(@PathVariable orderId: UUID, @PathVariable id: UUID): ResponseEntity<Void> {
+    fun cancel(@PathVariable orderId: UUID, @PathVariable id: UUID): ResponseEntity<RemoveOrderItemCommand> {
         val command = RemoveOrderItemCommand(
             orderId = orderId,
             itemId = id
         )
 
-        commandGateway.sendAndWait<RemoveOrderItemCommand>(command)
-
-        return ResponseEntity.ok().build()
+        return ResponseEntity.ok(commandGateway.sendAndWait(command))
     }
 }
