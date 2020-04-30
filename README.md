@@ -23,11 +23,14 @@ curl --location --request POST 'http://localhost:8087/orders/{order_id}/items' \
         "amount": 20
 }' -s | jq '.'
 
+// Remove Item
+curl --location --request DELETE 'http://localhost:8087/orders/1a9cb9a5-7344-4cf8-b1c2-98cdbb313142/items/e020daab-45e1-456e-9253-fe222de96cf6' -s | jq '.'
+
 // Confirm Order
-curl --location --request PUT 'http://localhost:8087/orders/1a9cb9a5-7344-4cf8-b1c2-98cdbb313142/confirmations' -s | jq '.'
+curl --location --request PUT 'http://localhost:8087/orders/{order_id}/confirmations' -s | jq '.'
 
 // Cancel Order
-curl --location --request DELETE 'http://localhost:8087/orders/1a9cb9a5-7344-4cf8-b1c2-98cdbb313142' \
+curl --location --request DELETE 'http://localhost:8087/orders/{order_id}' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "username": "movilepay"
