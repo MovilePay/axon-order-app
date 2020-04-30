@@ -1,7 +1,8 @@
 # Example of CQRS and Event Sourcing with Axon Framework
 
 ## Presentation
-https://www.youtube.com/watch?v=K6JKX1URZgc
+Video: https://www.youtube.com/watch?v=K6JKX1URZgc
+Slide: https://www.slideshare.net/acgarciacampos/cqrs-and-event-sourcing-with-axon-framework
 
 ## Up Axon Server before run services
 ```
